@@ -1,0 +1,77 @@
+{
+ "updatedAt": "2026-09-29T12:55:19.323Z",
+ "source": "Iowa DOT 511",
+ "warnings": [],
+ "items": [
+  {
+   "kind": "Construction",
+   "route": "Highway 71",
+   "text": "US 71: Starts Monday April 06. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Highway 71",
+   "text": "Starts Monday April 06. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Spencer area and Highway 71",
+   "text": "US 18: Starts Tuesday September 08. US 18: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Spencer area and Highway 71",
+   "text": "Starts Tuesday September 08. US 18: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Spencer area and Highway 71",
+   "text": "US 71: Starts Tuesday September 08. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Spencer area and Highway 71",
+   "text": "Starts Tuesday September 08. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Highway 71",
+   "text": "IA 7: Starts Monday September 28. IA 7: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Highway 71",
+   "text": "Starts Monday September 28. IA 7: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Spencer area and Highway 71",
+   "text": "US 71: Starts Monday September 21. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Spencer area and Highway 71",
+   "text": "Starts Monday September 21. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Highway 71",
+   "text": "US 71: Starts Thursday October 01. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Construction",
+   "route": "Highway 71",
+   "text": "Starts Thursday October 01. US 71: Road Construction. Until Dec 31."
+  },
+  {
+   "kind": "Traffic event",
+   "route": "Highway 71",
+   "text": "US 71: Starts Monday September 28. US 71: Right Shoulder Closed. Until Dec 31."
+  },
+  {
+   "kind": "Traffic event",
+   "route": "Highway 71",
+   "text": "Starts Monday September 28. US 71: Right Shoulder Closed. Until Dec 31."
+  }
+ ]
+}
