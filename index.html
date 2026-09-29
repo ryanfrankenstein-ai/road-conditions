@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1620">
+<title>Family drive forecast</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%A8%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#0e1620; --panel:#16212e; --panel2:#1c2a3a; --line:#2a3a4d;
+  --text:#e9eff6; --muted:#94a5b8; --frost:#8fd0ff;
+  --c0:#4fc38a; --c1:#f2c14e; --c2:#f08a3c; --c3:#ea5455; --cx:#6b7c90;
+  --b0:rgba(79,195,138,.14); --b1:rgba(242,193,78,.14); --b2:rgba(240,138,60,.16); --b3:rgba(234,84,85,.18); --bx:rgba(107,124,144,.14);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:16px; line-height:1.45;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
+}
+.wrap{max-width:560px; margin:0 auto; padding:14px 16px 40px}
+.top{display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:14px}
+.top button{
+  background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:999px;
+  min-height:40px; padding:0 16px; font:inherit; font-weight:500; cursor:pointer;
+}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--frost); outline-offset:2px}
+
+.hero{margin-top:14px; padding:4px 0 4px 16px; border-left:6px solid var(--cx)}
+.hero.l0{border-color:var(--c0)} .hero.l1{border-color:var(--c1)} .hero.l2{border-color:var(--c2)} .hero.l3{border-color:var(--c3)}
+h1{
+  font-family:'Bricolage Grotesque',system-ui,sans-serif; font-weight:700;
+  font-size:clamp(30px,9.5vw,42px); line-height:1.04; letter-spacing:-.02em; margin:0 0 8px;
+}
+.hero p{margin:0; color:var(--muted); max-width:38ch}
+
+.alerts{margin-top:14px; display:grid; gap:8px}
+.alert{border:1px solid var(--line); border-radius:12px; background:var(--panel)}
+.alert.l1{background:var(--b1); border-color:var(--c1)} .alert.l2{background:var(--b2); border-color:var(--c2)} .alert.l3{background:var(--b3); border-color:var(--c3)}
+.alert summary{padding:12px 14px; cursor:pointer; font-weight:600; min-height:44px}
+.alert div{padding:0 14px 12px; color:var(--muted); font-size:14px}
+
+h2{font-family:'Bricolage Grotesque',system-ui,sans-serif; font-weight:700; font-size:22px; letter-spacing:-.01em; margin:26px 0 10px}
+.week{display:grid; grid-template-columns:48px repeat(5,1fr); gap:6px; align-items:stretch}
+.week .rl{align-self:center; font-weight:600; font-size:14px; color:var(--muted)}
+.dh{
+  background:none; border:1px solid transparent; border-radius:10px; color:var(--text); font:inherit;
+  padding:6px 0; display:flex; flex-direction:column; align-items:center; line-height:1.15; cursor:pointer; min-height:48px;
+}
+.dh b{font-weight:600; font-size:14px} .dh span{font-size:13px; color:var(--muted)}
+.dh.sel{background:var(--panel2); border-color:var(--frost)}
+.cell{
+  min-height:46px; border-radius:10px; border:1px solid var(--line); background:var(--bx); color:var(--muted);
+  font:inherit; font-size:12px; font-weight:600; cursor:pointer; padding:0;
+}
+.cell.l0{background:var(--b0); border-color:var(--c0); color:var(--c0)}
+.cell.l1{background:var(--b1); border-color:var(--c1); color:var(--c1)}
+.cell.l2{background:var(--b2); border-color:var(--c2); color:var(--c2)}
+.cell.l3{background:var(--b3); border-color:var(--c3); color:var(--c3)}
+.cell.sel{box-shadow:0 0 0 2px var(--frost)}
+.note{color:var(--muted); font-size:13px; margin:10px 0 0}
+
+.card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-top:12px}
+.card h3{margin:0; font-family:'Bricolage Grotesque',system-ui,sans-serif; font-size:19px; font-weight:700}
+.card .sub{margin:2px 0 6px; color:var(--muted); font-size:14px}
+.win{padding:12px 0; border-top:1px solid var(--line)}
+.win:first-of-type{border-top:0}
+.win-top{display:flex; justify-content:space-between; align-items:center; gap:10px}
+.when{font-weight:600}
+.pill{border-radius:999px; padding:3px 12px; font-size:13px; font-weight:600; color:#0e1620; background:var(--cx); white-space:nowrap}
+.pill.l0{background:var(--c0)} .pill.l1{background:var(--c1)} .pill.l2{background:var(--c2)} .pill.l3{background:var(--c3)}
+.now{margin:8px 0 2px; font-size:17px}
+.meta,.via,.tip{margin:2px 0 0; color:var(--muted); font-size:14px}
+.tip{color:var(--text)}
+.tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+.tags span{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:2px 9px; font-size:13px}
+
+.btns{display:grid; gap:8px; margin-top:10px}
+.btn{
+  display:flex; align-items:center; justify-content:center; min-height:46px; border-radius:12px;
+  background:var(--panel2); border:1px solid var(--line); color:var(--text); text-decoration:none; font-weight:600;
+}
+.btn.main{background:var(--frost); color:#0e1620; border-color:var(--frost)}
+.list{list-style:none; padding:0; margin:8px 0 0; display:grid; gap:8px}
+.list li{background:var(--panel2); border-radius:10px; padding:10px 12px; font-size:15px}
+.list small{display:block; color:var(--muted)}
+.game{padding:12px 0; border-top:1px solid var(--line)}
+.game:first-of-type{border-top:0}
+footer{margin-top:28px; color:var(--muted); font-size:13px}
+.err{background:var(--b3); border:1px solid var(--c3); border-radius:12px; padding:12px 14px; margin-top:14px}
+@media (prefers-reduced-motion:no-preference){ .hero{transition:border-color .3s} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span id="updated">Getting the forecast</span><button id="refresh" type="button">Refresh</button></div>
+  <section class="hero" id="hero"><h1>Checking the roads</h1><p>Pulling the National Weather Service forecast for your drives.</p></section>
+  <div class="alerts" id="alerts"></div>
+  <h2>Week ahead</h2>
+  <div id="week"></div>
+  <p class="note">Each cell is the worst of that day's morning and afternoon drive. Days four and beyond can change.</p>
+  <div id="detail"></div>
+  <h2>Roads, construction and crashes</h2>
+  <div class="card" id="roads"></div>
+  <h2>Game travel</h2>
+  <div class="card" id="games"></div>
+  <footer>Forecasts and alerts come from the National Weather Service. Road reports come from Iowa 511. Always check the road before you go.</footer>
+</div>
+
+<script>
+/* ============ EDIT THIS SECTION ============ */
+const TZ = 'America/Chicago';
+const SPENCER = {name:'Spencer', lat:43.1414, lon:-95.1444};
+const MID = {name:'Midway', lat:42.89, lon:-95.17};            // rough point along Highway 71
+const STORM_LAKE = {name:'Storm Lake', lat:42.6411, lon:-95.2097};
+
+// depart = 24-hour clock time you leave, mins = how long the drive takes.
+// am = drive to work or school, pm = drive home. Change times here if your schedule shifts.
+const DRIVES = [
+  {id:'me',   short:'You',  name:'Your drive',   sub:'Home to the Merrill Company, Spencer',
+   points:[SPENCER], am:{depart:'06:07', mins:20}, pm:{depart:'16:15', mins:20}},
+  {id:'wife', short:'Wife', name:"Wife's drive", sub:'Highway 71 to BVU, Storm Lake',
+   points:[SPENCER, MID, STORM_LAKE], am:{depart:'07:20', mins:55}, pm:{depart:'16:30', mins:55}},
+  {id:'kids', short:'Kids', name:"Kids' drive",  sub:'Spencer High School and Middle School',
+   points:[SPENCER], am:{depart:'07:35', mins:15}, pm:{depart:'15:30', mins:15}}
+];
+
+// Add games here. Away games use the town's forecast; home games use Spencer.
+// Example: {date:'2026-11-24', sport:'Volleyball', opponent:'Spirit Lake', town:'Spirit Lake', time:'19:00', home:false},
+// For a town not in TOWNS below, add lat and lon to the game.
+const GAMES = [
+];
+
+const TOWNS = {
+  'Spencer':[43.1414,-95.1444], 'Storm Lake':[42.6411,-95.2097], 'Spirit Lake':[43.4227,-95.1064],
+  'Milford':[43.3277,-95.1522], 'Estherville':[43.4011,-94.8283], 'Emmetsburg':[43.1130,-94.6800],
+  'Algona':[43.0700,-94.2330], 'Fort Dodge':[42.4975,-94.1680], 'Sheldon':[43.1808,-95.8542],
+  'Sibley':[43.4025,-95.7469], 'Cherokee':[42.7494,-95.5527], 'Le Mars':[42.7947,-96.1656],
+  'Sioux Center':[43.0797,-96.1753], 'Orange City':[43.0000,-96.0631], 'Sioux City':[42.4997,-96.4003]
+};
+/* ============ END EDIT SECTION ============ */
+
+const LEVELS = [
+  {word:'Clear', tip:'Normal drive.'},
+  {word:'Watch', tip:'Allow extra time.'},
+  {word:'Rough', tip:'Slow going. Leave early.'},
+  {word:'Avoid', tip:'Avoid travel if you can.'}
+];
+
+/* ---------- time helpers ---------- */
+const fmtParts = new Intl.DateTimeFormat('en-US',{timeZone:TZ,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+function parts(d){const o={};for(const p of fmtParts.formatToParts(d))o[p.type]=p.value;return{y:+o.year,m:+o.month,d:+o.day,h:+o.hour,mi:+o.minute};}
+function zoned(ds,hm){
+  const [y,m,d]=ds.split('-').map(Number),[h,mi]=hm.split(':').map(Number);
+  const guess=Date.UTC(y,m-1,d,h,mi), q=parts(new Date(guess));
+  const asUTC=Date.UTC(q.y,q.m-1,q.d,q.h,q.mi);
+  return new Date(guess-(asUTC-guess));
+}
+function todayStr(){return new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date());}
+function fmtTime(ms){return new Intl.DateTimeFormat('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'}).format(new Date(ms));}
+function fmtHM(hm){const [h,m]=hm.split(':').map(Number);return (h%12||12)+':'+String(m).padStart(2,'0')+' '+(h<12?'AM':'PM');}
+function fmtWhen(ms){return new Intl.DateTimeFormat('en-US',{timeZone:TZ,weekday:'short',hour:'numeric',minute:'2-digit'}).format(new Date(ms));}
+const utcFmt=o=>new Intl.DateTimeFormat('en-US',{timeZone:'UTC',...o});
+function workdays(){
+  const [y,m,d]=todayStr().split('-').map(Number), out=[];
+  for(let i=0;i<10&&out.length<5;i++){
+    const dt=new Date(Date.UTC(y,m-1,d+i,12)), wd=dt.getUTCDay();
+    if(wd>0&&wd<6) out.push({ds:dt.toISOString().slice(0,10),dt,i});
+  }
+  return out;
+}
+
+/* ---------- data ---------- */
+const key=pt=>pt.lat.toFixed(4)+','+pt.lon.toFixed(4);
+let FORCE=false;
+async function getJSON(url,ttlMin){
+  if(!FORCE){
+    try{const c=JSON.parse(localStorage.getItem('nws:'+url)||'null'); if(c&&Date.now()-c.t<ttlMin*60000) return c.d;}catch(e){}
+  }
+  const r=await fetch(url);
+  if(!r.ok) throw new Error(url+' '+r.status);
+  const d=await r.json();
+  try{localStorage.setItem('nws:'+url,JSON.stringify({t:Date.now(),d}));}catch(e){}
+  return d;
+}
+async function hourlyFor(pt){
+  const p=await getJSON('https://api.weather.gov/points/'+key(pt),60*24*7);
+  const h=await getJSON(p.properties.forecastHourly,10);
+  return h.properties.periods.map(x=>({...x,s:new Date(x.startTime).getTime(),e:new Date(x.endTime).getTime()}));
+}
+async function alertsFor(pt){
+  const a=await getJSON('https://api.weather.gov/alerts/active?point='+key(pt),10);
+  return a.features.map(f=>f.properties);
+}
+
+/* ---------- rating ---------- */
+function windMax(s){const n=(s||'').match(/\d+/g);return n?Math.max(...n.map(Number)):0;}
+function rate(p){
+  const t=(p.shortForecast||'').toLowerCase(), wind=windMax(p.windSpeed);
+  const pop=(p.probabilityOfPrecipitation&&p.probabilityOfPrecipitation.value)||0, temp=p.temperature;
+  let lvl=0; const why=[];
+  const add=(l,label)=>{lvl=Math.max(lvl,l); if(label&&!why.includes(label))why.push(label);};
+  const snowy=/snow|flurr|blizzard|wintry/.test(t);
+  if(/blizzard/.test(t)) add(3,'Blizzard');
+  else if(/heavy snow/.test(t)) add(3,'Heavy snow');
+  else if(/wintry mix/.test(t)) add(2,'Wintry mix');
+  else if(snowy) add(pop>=60?2:1,/flurr/.test(t)?'Flurries':'Snow');
+  if(/freezing rain|sleet|freezing drizzle|\bice\b/.test(t)) add(pop>=40?3:2,'Ice');
+  if(/dense fog/.test(t)) add(2,'Dense fog'); else if(/fog/.test(t)) add(1,'Fog');
+  if(/thunder/.test(t)) add(pop>=50?2:1,'Storms');
+  if(/heavy rain/.test(t)) add(2,'Heavy rain');
+  else if(/rain|drizzle|shower/.test(t)&&pop>=40){ add(1,'Rain'); if(temp<=34) add(2,'Ice risk'); }
+  if(wind>=25) add(wind>=45?3:wind>=35?2:1,'Wind '+wind+' mph');
+  if(snowy&&wind>=25&&!/blizzard/.test(t)){ lvl=Math.min(3,lvl+1); why.push('Blowing snow'); }
+  return {lvl,why};
+}
+function alertLevel(ev){
+  if(/blizzard warning|ice storm warning|winter storm warning|tornado warning|flash flood warning|extreme wind warning/i.test(ev)) return 3;
+  if(/watch/i.test(ev)) return 1;
+  if(/winter weather advisory|dense fog advisory|freezing fog advisory|freezing rain advisory|wind advisory|high wind warning|severe thunderstorm warning|snow squall|flood warning/i.test(ev)) return 2;
+  if(/special weather statement/i.test(ev)) return 1;
+  return 0;
+}
+function icon(p){
+  const t=p.shortForecast.toLowerCase();
+  if(/thunder/.test(t))return'⛈️'; if(/snow|flurr|blizzard|wintry/.test(t))return'❄️';
+  if(/freezing|sleet|\bice\b/.test(t))return'🧊'; if(/rain|shower|drizzle/.test(t))return'🌧️';
+  if(/fog|haze|mist/.test(t))return'🌫️';
+  if(/partly|mostly sunny|mostly clear/.test(t))return p.isDaytime?'⛅':'🌙';
+  if(/cloud|overcast/.test(t))return'☁️';
+  return p.isDaytime?'☀️':'🌙';
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- evaluate a drive window ---------- */
+let HOURLY={}, ALERTS={}, MEMO=new Map();
+const periodAt=(list,t)=>list.find(p=>t>=p.s&&t<p.e);
+
+function evalSamples(samples){
+  const now=Date.now(), rows=[];
+  for(const s of samples){
+    const list=HOURLY[key(s.pt)];
+    if(!list){rows.push({s,miss:true});continue;}
+    const p=periodAt(list,s.t);
+    if(!p){rows.push({s,miss:true,past:s.t<now});continue;}
+    const r=rate(p);
+    for(const a of (ALERTS[key(s.pt)]||[])){
+      const lv=alertLevel(a.event||''); if(!lv) continue;
+      const st=Date.parse(a.onset||a.effective), en=Date.parse(a.ends||a.expires);
+      if(s.t>=st-30*60000&&s.t<=en){ r.lvl=Math.max(r.lvl,lv); if(!r.why.includes(a.event)) r.why.push(a.event); }
+    }
+    rows.push({s,p,...r});
+  }
+  const ok=rows.filter(r=>r.p);
+  if(!ok.length) return {status:rows.every(r=>r.past)?'past':'none'};
+  const worst=ok.reduce((a,b)=>b.lvl>a.lvl?b:a,ok[0]);
+  const lvl=worst.lvl, why=[];
+  ok.forEach(r=>r.why.forEach(w=>{if(!why.includes(w))why.push(w);}));
+  return {status:'ok',lvl,why,worst,rows:ok};
+}
+function evalWindow(drive,wkey,ds){
+  const k=drive.id+wkey+ds; if(MEMO.has(k)) return MEMO.get(k);
+  const win=drive[wkey], start=zoned(ds,win.depart).getTime(), n=drive.points.length;
+  const samples = n===1
+    ? [{pt:drive.points[0],t:start},{pt:drive.points[0],t:start+win.mins*60000}]
+    : drive.points.map((pt,i)=>({pt,t:start+win.mins*60000*i/(n-1)}));
+  const r=evalSamples(samples); MEMO.set(k,r); return r;
+}
+function dayLevel(drive,ds){
+  const a=evalWindow(drive,'am',ds), p=evalWindow(drive,'pm',ds);
+  const lv=[a,p].filter(x=>x.status==='ok').map(x=>x.lvl);
+  return lv.length?Math.max(...lv):null;
+}
+
+/* ---------- render ---------- */
+let DAYS=[], SEL=0, ROADS=null;
+
+function whenPhrase(day,wkey){
+  const am=wkey==='am';
+  if(day.i===0) return am?'this morning':'this afternoon';
+  if(day.i===1) return am?'tomorrow morning':'tomorrow afternoon';
+  return utcFmt({weekday:'long'}).format(day.dt)+(am?' morning':' afternoon');
+}
+function renderHero(){
+  let best=-1, at=null;
+  for(const d of DAYS) for(const w of ['am','pm']) for(const dr of DRIVES){
+    const r=evalWindow(dr,w,d.ds);
+    if(r.status==='ok'&&r.lvl>best){best=r.lvl; at={d,w};}
+  }
+  const hero=document.getElementById('hero');
+  if(best<0){
+    hero.className='hero'; hero.innerHTML='<h1>No forecast yet</h1><p>The National Weather Service did not return data for your drives. Tap Refresh to try again.</p>'; return;
+  }
+  if(best===0){
+    const last=utcFmt({weekday:'long'}).format(DAYS[DAYS.length-1].dt);
+    hero.className='hero l0';
+    hero.innerHTML=`<h1>Clear driving through ${last}</h1><p>No snow, ice, fog or heavy rain in the forecast for your drive times.</p>`; return;
+  }
+  const when=whenPhrase(at.d,at.w);
+  const head=best===3?`Avoid travel ${when}`:best===2?`Rough driving ${when}`:`Heads up for ${when}`;
+  const hit=DRIVES.map(dr=>({dr,r:evalWindow(dr,at.w,at.d.ds)})).filter(x=>x.r.status==='ok'&&x.r.lvl===best);
+  const names=hit.map(x=>x.dr.short).join(' and ');
+  const why=[]; hit.forEach(x=>x.r.why.forEach(w=>{const l=w[0].toLowerCase()+w.slice(1); if(!why.includes(l))why.push(l);}));
+  hero.className='hero l'+best;
+  hero.innerHTML=`<h1>${esc(head)}</h1><p>Affects ${esc(names)}: ${esc(why.join(', '))}.</p>`;
+}
+function renderAlerts(){
+  const seen=new Map();
+  for(const dr of DRIVES) for(const pt of dr.points) for(const a of (ALERTS[key(pt)]||[])){
+    const id=a.id||(a.event+a.ends); if(!seen.has(id)) seen.set(id,a);
+  }
+  const list=[...seen.values()].map(a=>({...a,lvl:alertLevel(a.event||'')})).sort((a,b)=>b.lvl-a.lvl).slice(0,4);
+  document.getElementById('alerts').innerHTML=list.map(a=>{
+    const until=a.ends||a.expires;
+    return `<details class="alert l${a.lvl}"><summary>${esc(a.event)}${until?' until '+esc(fmtWhen(Date.parse(until))):''}</summary><div>${esc(a.headline||a.description||'')}</div></details>`;
+  }).join('');
+}
+function renderWeek(){
+  let g='<div class="week"><span></span>';
+  DAYS.forEach((d,i)=>{g+=`<button type="button" class="dh ${i===SEL?'sel':''}" data-day="${i}"><b>${utcFmt({weekday:'short'}).format(d.dt)}</b><span>${utcFmt({day:'numeric'}).format(d.dt)}</span></button>`;});
+  for(const dr of DRIVES){
+    g+=`<span class="rl">${esc(dr.short)}</span>`;
+    DAYS.forEach((d,i)=>{
+      const lv=dayLevel(dr,d.ds), word=lv===null?'None':LEVELS[lv].word;
+      g+=`<button type="button" class="cell ${lv===null?'lx':'l'+lv} ${i===SEL?'sel':''}" data-day="${i}" aria-label="${esc(dr.short)}, ${utcFmt({weekday:'long'}).format(d.dt)}: ${lv===null?'no forecast yet':word}">${lv===null?'—':word}</button>`;
+    });
+  }
+  document.getElementById('week').innerHTML=g+'</div>';
+}
+function winHTML(dr,wkey,label,ds){
+  const win=dr[wkey], r=evalWindow(dr,wkey,ds);
+  const head=`<div class="win-top"><span class="when">${label}, leave ${fmtHM(win.depart)}</span>`;
+  if(r.status!=='ok'){
+    const past=r.status==='past';
+    return `<div class="win">${head}<span class="pill lx">${past?'Done':'No data'}</span></div><p class="meta">${past?'This drive already happened.':'The forecast does not reach this far yet.'}</p></div>`;
+  }
+  const p=r.worst.p;
+  const via=dr.points.length>1?`<p class="via">${r.rows.map(x=>esc(x.s.pt.name)+' '+x.p.temperature+'°, '+esc(x.p.shortForecast.toLowerCase())).join('; ')}</p>`:'';
+  return `<div class="win">${head}<span class="pill l${r.lvl}">${LEVELS[r.lvl].word}</span></div>
+    <p class="now">${icon(p)} ${p.temperature}°, ${esc(p.shortForecast)}</p>
+    <p class="meta">Wind ${esc(p.windDirection||'')} ${esc(p.windSpeed)}, ${(p.probabilityOfPrecipitation&&p.probabilityOfPrecipitation.value)||0}% chance of precipitation</p>
+    ${r.why.length?`<div class="tags">${r.why.map(w=>`<span>${esc(w)}</span>`).join('')}</div>`:''}
+    ${r.lvl>=1?`<p class="tip">${LEVELS[r.lvl].tip}</p>`:''}${via}</div>`;
+}
+function renderDetail(){
+  const d=DAYS[SEL]; if(!d) return;
+  const title=utcFmt({weekday:'long',month:'short',day:'numeric'}).format(d.dt);
+  document.getElementById('detail').innerHTML=`<h2>${title}</h2>`+DRIVES.map(dr=>
+    `<div class="card"><h3>${esc(dr.name)}</h3><p class="sub">${esc(dr.sub)}</p>${winHTML(dr,'am','Morning',d.ds)}${winHTML(dr,'pm','Afternoon',d.ds)}</div>`
+  ).join('');
+}
+function renderRoads(){
+  const el=document.getElementById('roads');
+  let body='';
+  if(ROADS&&Array.isArray(ROADS.items)){
+    const t=Date.parse(ROADS.updatedAt), stale=!t||Date.now()-t>3*3600000;
+    body=(ROADS.items.length
+      ?`<ul class="list">${ROADS.items.map(i=>`<li>${esc(i.kind||'Report')} on ${esc(i.route||'your route')}<small>${esc(i.text||'')}</small></li>`).join('')}</ul>`
+      :'<p class="meta">No crashes, closures or construction reported on your routes.</p>')
+      +`<p class="note">${t?'Iowa 511 reports as of '+esc(fmtWhen(t))+'.':''}${stale?' This may be out of date, so check the 511 map before you go.':''}${(ROADS.warnings||[]).length?' '+esc(ROADS.warnings.join(' ')):''}</p>`;
+  } else {
+    body='<p class="meta">Live crash and construction reports are not connected yet. The Iowa 511 map shows them for all three routes, including Highway 71.</p>';
+  }
+  el.innerHTML=body+`<div class="btns"><a class="btn main" href="https://511ia.org" target="_blank" rel="noopener">Open the Iowa 511 map</a><a class="btn" href="tel:511">Call 511</a><a class="btn" href="https://forecast.weather.gov/MapClick.php?lat=43.1414&lon=-95.1444" target="_blank" rel="noopener">Full National Weather Service forecast for Spencer</a></div>`;
+}
+function gameCoords(g){
+  if(g.home) return SPENCER;
+  if(g.lat!=null&&g.lon!=null) return {name:g.town||g.opponent,lat:g.lat,lon:g.lon};
+  const t=TOWNS[g.town]; return t?{name:g.town,lat:t[0],lon:t[1]}:null;
+}
+function upcomingGames(){
+  const [y,m,d]=todayStr().split('-').map(Number), start=todayStr(), end=new Date(Date.UTC(y,m-1,d+7,12)).toISOString().slice(0,10);
+  return GAMES.filter(g=>g.date>=start&&g.date<=end).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+}
+function renderGames(){
+  const el=document.getElementById('games'), list=upcomingGames();
+  if(!list.length){
+    el.innerHTML=GAMES.length?'<p class="meta">No games in the next 7 days.</p>':'<p class="meta">No games added yet. Add them to the GAMES list near the top of the script in index.html, and each away game gets its own forecast.</p>';
+    return;
+  }
+  el.innerHTML=list.map(g=>{
+    const pt=gameCoords(g), t=zoned(g.date,g.time).getTime();
+    const day=utcFmt({weekday:'short',month:'short',day:'numeric'}).format(new Date(g.date+'T12:00:00Z'));
+    const title=`${esc(g.sport)} ${g.home?'vs':'at'} ${esc(g.opponent)}`;
+    if(!pt) return `<div class="game"><div class="win-top"><span class="when">${title}</span></div><p class="meta">${day}, ${fmtHM(g.time)}. Add a lat and lon for ${esc(g.town||'this town')} to get its forecast.</p></div>`;
+    const r=evalSamples([{pt,t},{pt,t:t+150*60000}]);
+    if(r.status!=='ok') return `<div class="game"><div class="win-top"><span class="when">${title}</span><span class="pill lx">No data</span></div><p class="meta">${day}, ${fmtHM(g.time)}${g.home?'':' in '+esc(pt.name)}. The forecast does not reach this far yet.</p></div>`;
+    const p=r.worst.p;
+    return `<div class="game"><div class="win-top"><span class="when">${title}</span><span class="pill l${r.lvl}">${LEVELS[r.lvl].word}</span></div>
+      <p class="meta">${day}, ${fmtHM(g.time)}${g.home?', home game':' in '+esc(pt.name)}</p>
+      <p class="now">${icon(p)} ${p.temperature}°, ${esc(p.shortForecast)}</p>
+      <p class="meta">Wind ${esc(p.windDirection||'')} ${esc(p.windSpeed)}. Conditions at the game and two and a half hours later.</p>
+      ${r.why.length?`<div class="tags">${r.why.map(w=>`<span>${esc(w)}</span>`).join('')}</div>`:''}</div>`;
+  }).join('');
+}
+function renderAll(){
+  MEMO=new Map();
+  renderHero(); renderAlerts(); renderWeek(); renderDetail(); renderRoads(); renderGames();
+}
+
+/* ---------- load ---------- */
+let LOADED_AT=0;
+async function load(force){
+  FORCE=!!force;
+  const btn=document.getElementById('refresh'); btn.disabled=true; btn.textContent='Refreshing';
+  DAYS=workdays(); if(SEL>=DAYS.length) SEL=0;
+  const pts=new Map();
+  DRIVES.forEach(dr=>dr.points.forEach(p=>pts.set(key(p),p)));
+  upcomingGames().forEach(g=>{const p=gameCoords(g); if(p) pts.set(key(p),p);});
+  const all=[...pts.values()];
+  HOURLY={}; ALERTS={};
+  const res=await Promise.allSettled(all.map(async pt=>{
+    const [h,a]=await Promise.allSettled([hourlyFor(pt),alertsFor(pt)]);
+    if(h.status==='fulfilled') HOURLY[key(pt)]=h.value;
+    if(a.status==='fulfilled') ALERTS[key(pt)]=a.value;
+    if(h.status==='rejected') throw h.reason;
+  }));
+  try{const r=await fetch('roads.json',{cache:'no-store'}); ROADS=r.ok?await r.json():null;}catch(e){ROADS=null;}
+  renderAll();
+  const failed=res.every(r=>r.status==='rejected');
+  if(failed) document.getElementById('hero').insertAdjacentHTML('afterend','<div class="err">Could not reach the National Weather Service. Check your connection, then tap Refresh.</div>');
+  document.querySelectorAll('.err').forEach((e,i,a)=>{ if(!failed||i<a.length-1) e.remove(); });
+  LOADED_AT=Date.now(); FORCE=false;
+  document.getElementById('updated').textContent='Updated '+fmtTime(LOADED_AT);
+  btn.disabled=false; btn.textContent='Refresh';
+}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-day]'); if(!b) return;
+  SEL=+b.dataset.day; renderWeek(); renderDetail();
+});
+document.getElementById('refresh').addEventListener('click',()=>load(true));
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&Date.now()-LOADED_AT>15*60000) load(false);
+});
+load(false);
+</script>
+</body>
+</html>
