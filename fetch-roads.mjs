@@ -136,6 +136,17 @@ function pickTime(props, re) {
 const day = (ms) => new Intl.DateTimeFormat('en-US', { timeZone: TZ, month: 'short', day: 'numeric' }).format(new Date(ms));
 const clip = (s, n = 220) => (s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s);
 
+// The feed often repeats a road label ("US 71:") and a "Starts Monday April 06." lead-in inside the
+// description, and sometimes only on one of two copies of the same project. Strip both so copies match.
+function tidy(d) {
+  let prev;
+  do {
+    prev = d;
+    d = d.replace(/^starts\s+\w+\s+\w+\s+\d{1,2}\.?\s*/i, '').replace(/^[A-Za-z.]{1,4}[\s-]?\d{1,3}\s*:\s*/, '');
+  } while (d !== prev);
+  return d.trim();
+}
+
 function kindOf(type, desc) {
   const all = `${type} ${desc}`;
   const closed = /road (is )?closed|closed to (all )?traffic|full closure|detour|impassable/i.test(all);
@@ -143,6 +154,7 @@ function kindOf(type, desc) {
   if (/construct|road ?work|maint/i.test(type)) return closed ? { kind: 'Road closure', rank: 1 } : { kind: 'Construction', rank: 3 };
   if (/crash|accident|collision|overturn|jackknif|spill|disabled|stalled|debris/i.test(all)) return { kind: 'Crash or incident', rank: 0 };
   if (closed) return { kind: 'Road closure', rank: 1 };
+  if (/(lane|shoulder).{0,25}(closed|closure|restrict)|(closed|closure).{0,25}(lane|shoulder)/i.test(all)) return { kind: 'Lane or shoulder closed', rank: 2.5 };
   if (/weather|snow|\bice\b|icy|fog|flood|wind/i.test(all)) return { kind: 'Weather', rank: 2 };
   if (/construct|road ?work|maint|resurfac|paving|bridge|work zone|repair/i.test(all)) return { kind: 'Construction', rank: 3 };
   return { kind: 'Traffic event', rank: 4 };
@@ -176,7 +188,7 @@ function eventItems(features, now) {
     if (start && start > now + 7 * 864e5) continue;
     const routes = matchCorridors(f.geometry, `${road} ${desc}`);
     if (!routes.length) continue;
-    desc = desc.replace(/^starts\s+\w+\s+\w+\s+\d{1,2}\.?\s*/i, '') || type || 'Traffic event'; // the feed's own "Starts Monday April 06." lead-in
+    desc = tidy(desc) || type || 'Traffic event';
     const { kind, rank } = kindOf(`${type} ${sub}`, desc);
     const num = (road.match(/\d+/) || [''])[0];
     const named = road && (desc.toLowerCase().includes(road.toLowerCase()) || (num && new RegExp(`\\b${num}\\b`).test(desc)));
@@ -186,7 +198,7 @@ function eventItems(features, now) {
     if (end && kind !== 'Crash or incident') text += ` Until ${day(end)}.`;
     items.push({
       kind, route: routes.join(' and '), text: clip(text), rank,
-      key: `${kind}|${routes.join('+')}|${desc.toLowerCase().replace(/[^a-z0-9]/g, '')}`
+      key: `${kind}|${routes.join('+')}|${num || road.toLowerCase()}|${desc.toLowerCase().replace(/[^a-z0-9]/g, '')}|${end ? day(end) : ''}`
     });
   }
   return items;
