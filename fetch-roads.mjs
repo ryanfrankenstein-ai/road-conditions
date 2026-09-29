@@ -176,12 +176,18 @@ function eventItems(features, now) {
     if (start && start > now + 7 * 864e5) continue;
     const routes = matchCorridors(f.geometry, `${road} ${desc}`);
     if (!routes.length) continue;
+    desc = desc.replace(/^starts\s+\w+\s+\w+\s+\d{1,2}\.?\s*/i, '') || type || 'Traffic event'; // the feed's own "Starts Monday April 06." lead-in
     const { kind, rank } = kindOf(`${type} ${sub}`, desc);
-    let text = road && !desc.toLowerCase().includes(road.toLowerCase()) ? `${road}: ${desc}` : desc;
+    const num = (road.match(/\d+/) || [''])[0];
+    const named = road && (desc.toLowerCase().includes(road.toLowerCase()) || (num && new RegExp(`\\b${num}\\b`).test(desc)));
+    let text = road && !named ? `${road}: ${desc}` : desc;
     if (!/[.!?]$/.test(text)) text += '.';
     if (start && start > now) text += ` Starts ${day(start)}.`;
     if (end && kind !== 'Crash or incident') text += ` Until ${day(end)}.`;
-    items.push({ kind, route: routes.join(' and '), text: clip(text), rank });
+    items.push({
+      kind, route: routes.join(' and '), text: clip(text), rank,
+      key: `${kind}|${routes.join('+')}|${desc.toLowerCase().replace(/[^a-z0-9]/g, '')}`
+    });
   }
   return items;
 }
@@ -229,10 +235,24 @@ async function main() {
     warnings.push('Winter road conditions were unavailable on the last update.');
   }
 
+  // Merge duplicates, then keep crashes, closures and weather on top. Long-running
+  // construction is capped at 3 per route, with a summary line for the rest.
   const seen = new Set();
-  items = items
+  items = items.filter((i) => { const k = i.key || `${i.kind}|${i.route}|${i.text}`; if (seen.has(k)) return false; seen.add(k); return true; });
+  const others = items.filter((i) => i.rank !== 3);
+  const byRoute = new Map();
+  for (const i of items.filter((x) => x.rank === 3)) byRoute.set(i.route, [...(byRoute.get(i.route) || []), i]);
+  const impact = (i) => (/lane|clos|flagger|restrict|narrow|width|detour|delay|one-way/i.test(i.text) ? 0 : 1);
+  const construction = [];
+  for (const [route, list] of byRoute) {
+    list.sort((a, b) => impact(a) - impact(b));
+    construction.push(...list.slice(0, 3));
+    if (list.length > 3) {
+      construction.push({ kind: 'Construction', route, rank: 3, text: `${list.length - 3} more long-running road project${list.length - 3 === 1 ? '' : 's'}. Check the Iowa 511 map for lane closures.` });
+    }
+  }
+  items = [...others, ...construction]
     .sort((a, b) => a.rank - b.rank)
-    .filter((i) => { const k = `${i.kind}|${i.route}|${i.text}`; if (seen.has(k)) return false; seen.add(k); return true; })
     .slice(0, 20)
     .map(({ kind, route, text }) => ({ kind, route, text }));
 
