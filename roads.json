@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-09-29T12:55:19.323Z",
+ "updatedAt": "2026-09-29T13:41:10.764Z",
  "source": "Iowa DOT 511",
  "warnings": [],
  "items": [
@@ -11,27 +11,7 @@
   {
    "kind": "Construction",
    "route": "Highway 71",
-   "text": "Starts Monday April 06. US 71: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Spencer area and Highway 71",
-   "text": "US 18: Starts Tuesday September 08. US 18: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Spencer area and Highway 71",
-   "text": "Starts Tuesday September 08. US 18: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Spencer area and Highway 71",
-   "text": "US 71: Starts Tuesday September 08. US 71: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Spencer area and Highway 71",
-   "text": "Starts Tuesday September 08. US 71: Road Construction. Until Dec 31."
+   "text": "US 71: Road Construction. Until Dec 31."
   },
   {
    "kind": "Construction",
@@ -41,27 +21,27 @@
   {
    "kind": "Construction",
    "route": "Highway 71",
-   "text": "Starts Monday September 28. IA 7: Road Construction. Until Dec 31."
+   "text": "2 more long-running road projects. Check the Iowa 511 map for lane closures."
   },
   {
    "kind": "Construction",
    "route": "Spencer area and Highway 71",
-   "text": "US 71: Starts Monday September 21. US 71: Road Construction. Until Dec 31."
+   "text": "US 18: Starts Tuesday September 08. US 18: Road Construction. Until Dec 31."
   },
   {
    "kind": "Construction",
    "route": "Spencer area and Highway 71",
-   "text": "Starts Monday September 21. US 71: Road Construction. Until Dec 31."
+   "text": "US 18: Road Construction. Until Dec 31."
   },
   {
    "kind": "Construction",
-   "route": "Highway 71",
-   "text": "US 71: Starts Thursday October 01. US 71: Road Construction. Until Dec 31."
+   "route": "Spencer area and Highway 71",
+   "text": "US 71: Starts Tuesday September 08. US 71: Road Construction. Until Dec 31."
   },
   {
    "kind": "Construction",
-   "route": "Highway 71",
-   "text": "Starts Thursday October 01. US 71: Road Construction. Until Dec 31."
+   "route": "Spencer area and Highway 71",
+   "text": "2 more long-running road projects. Check the Iowa 511 map for lane closures."
   },
   {
    "kind": "Traffic event",
@@ -71,7 +51,7 @@
   {
    "kind": "Traffic event",
    "route": "Highway 71",
-   "text": "Starts Monday September 28. US 71: Right Shoulder Closed. Until Dec 31."
+   "text": "US 71: Right Shoulder Closed. Until Dec 31."
   }
  ]
 }
