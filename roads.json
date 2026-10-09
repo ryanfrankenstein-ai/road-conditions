@@ -1,22 +1,12 @@
 {
- "updatedAt": "2026-10-09T19:47:24.943Z",
+ "updatedAt": "2026-10-09T23:49:18.544Z",
  "source": "Iowa DOT 511",
  "warnings": [],
  "items": [
   {
-   "kind": "Lane or shoulder closed",
-   "route": "Highway 71",
-   "text": "US 71: Right Shoulder Closed. Until Dec 31."
-  },
-  {
    "kind": "Construction",
    "route": "Highway 71",
    "text": "US 71: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Highway 71",
-   "text": "IA 7: Road Construction. Until Dec 31."
   },
   {
    "kind": "Construction",
