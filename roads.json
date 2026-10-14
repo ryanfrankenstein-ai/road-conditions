@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-14T15:22:43.237Z",
+ "updatedAt": "2026-10-14T19:35:20.212Z",
  "source": "Iowa DOT 511",
  "warnings": [],
  "items": [
@@ -17,11 +17,6 @@
    "kind": "Construction",
    "route": "Spencer area and Highway 71",
    "text": "US 71: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Spencer area and Highway 71",
-   "text": "US 18: Road Maintenance Operations. Until Dec 31."
   }
  ]
 }
