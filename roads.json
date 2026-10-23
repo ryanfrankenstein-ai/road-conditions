@@ -1,31 +1,11 @@
 {
- "updatedAt": "2026-10-23T11:38:28.659Z",
+ "updatedAt": "2026-10-23T15:55:52.642Z",
  "source": "Iowa DOT 511",
  "warnings": [],
  "items": [
   {
-   "kind": "Lane or shoulder closed",
-   "route": "Spencer area and Highway 71",
-   "text": "US 18 WB: Starts Tuesday October 27. US 18 WB: Right Lane Closed. Until Dec 31."
-  },
-  {
-   "kind": "Lane or shoulder closed",
-   "route": "Spencer area and Highway 71",
-   "text": "US 18 WB: Right Lane Closed. Until Dec 31."
-  },
-  {
    "kind": "Construction",
    "route": "Highway 71",
-   "text": "US 71: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Spencer area and Highway 71",
-   "text": "US 18: Road Construction. Until Dec 31."
-  },
-  {
-   "kind": "Construction",
-   "route": "Spencer area and Highway 71",
    "text": "US 71: Road Construction. Until Dec 31."
   }
  ]
