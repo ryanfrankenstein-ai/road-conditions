@@ -7,7 +7,7 @@ const artifacts=path.join(root,'.test-artifacts');
 fs.mkdirSync(artifacts,{recursive:true});
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{})});
- const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:1});
+ const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:1,colorScheme:'light'});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.clock.install({time:new Date('2026-11-06T14:00:00Z')});
  let mode='normal';
@@ -21,7 +21,7 @@ fs.mkdirSync(artifacts,{recursive:true});
   else {body={properties:{periods:mode==='clear'?periods.map(p=>({...p,shortForecast:'Partly Sunny',windSpeed:'5 to 10 mph',temperature:48,probabilityOfPrecipitation:{value:10}})):periods}};}
   await route.fulfill({json:body});
  });
- await page.route('http://127.0.0.1:4173/**', async route=>{ const file=new URL(route.request().url()).pathname.slice(1)||'index.html'; if(!['index.html','styles.css','roads.json'].includes(file))return route.fulfill({status:404,body:''}); await route.fulfill({path:path.join(root,file),contentType:file.endsWith('.css')?'text/css':file.endsWith('.json')?'application/json':'text/html'}); });
+ await page.route('http://127.0.0.1:4173/**', async route=>{ const file=new URL(route.request().url()).pathname.slice(1)||'index.html'; if(!['index.html','styles.css','roads.json','theme.js'].includes(file))return route.fulfill({status:404,body:''}); await route.fulfill({path:path.join(root,file),contentType:file.endsWith('.css')?'text/css':file.endsWith('.json')?'application/json':file.endsWith('.js')?'text/javascript':'text/html'}); });
  await page.goto('http://127.0.0.1:4173/');await page.waitForFunction(()=>document.querySelectorAll('.drive-card').length===3);
  assert.equal(await page.locator('h1').count(),1);
  assert.equal(await page.locator('.cell').count(),15);
@@ -34,7 +34,7 @@ fs.mkdirSync(artifacts,{recursive:true});
  await page.screenshot({path:path.join(artifacts,'desktop-preview.png'),fullPage:true});
  for(const width of [320,375,390,580,768,1024,1440]){
   await page.setViewportSize({width,height:900});
-  const result=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,small:[...document.querySelectorAll('button,.btn')].filter(e=>e.getBoundingClientRect().height<44).map(e=>e.className)}));
+  const result=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,small:[...document.querySelectorAll('button,.btn,select')].filter(e=>e.getBoundingClientRect().height<44).map(e=>e.className)}));
   assert.ok(result.scroll<=width,`Overflow at ${width}: ${result.scroll}`);assert.deepEqual(result.small,[],`Small touch targets at ${width}`);
  }
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(artifacts,'mobile-preview.png'),fullPage:true});
@@ -46,7 +46,39 @@ fs.mkdirSync(artifacts,{recursive:true});
  mode='clear';await page.click('#refresh');await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);assert.match(await page.locator('#hero').innerText(),/Clear driving through/);
  await page.evaluate(()=>{GAMES.push({date:'2026-11-06',sport:'Basketball',opponent:'Spirit Lake',time:'19:00',home:true});renderGames();});
  assert.match(await page.locator('#games').innerText(),/Basketball vs Spirit Lake/);assert.equal(await page.locator('#games .now').count(),1);
- assert.deepEqual(errors,[]);console.log('PASS: forecast rendering, day selection, 7 responsive widths, 44px control heights, alerts, refresh, outage and recovery.');
+ // Auto follows system changes; explicit choices override them and survive reloads.
+ assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
+ await page.emulateMedia({colorScheme:'dark'});
+ await page.waitForFunction(()=>document.documentElement.dataset.theme==='dark');
+ assert.equal(await page.locator('#appearance').inputValue(),'system');
+ assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),'#111e19');
+ await page.selectOption('#appearance','light');
+ await page.reload();await page.waitForFunction(()=>document.querySelectorAll('.drive-card').length===3);
+ assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
+ assert.equal(await page.locator('#appearance').inputValue(),'light');
+ await page.selectOption('#appearance','dark');
+ await page.emulateMedia({colorScheme:'light'});
+ await page.reload();await page.waitForFunction(()=>document.querySelectorAll('.drive-card').length===3);
+ assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
+ assert.equal(await page.locator('#appearance').inputValue(),'dark');
+ for(const width of [320,375,390,580,768,1024,1440]){
+  await page.setViewportSize({width,height:900});
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Dark overflow at ${width}`);
+ }
+ await page.setViewportSize({width:1440,height:1100});
+ await page.screenshot({path:path.join(artifacts,'dark-desktop-preview.png'),fullPage:true});
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:path.join(artifacts,'dark-mobile-preview.png'),fullPage:true});
+ await page.selectOption('#appearance','system');
+ assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
+ // Storage restrictions should not prevent switching appearance.
+ await page.addInitScript(()=>{Storage.prototype.getItem=()=>{throw new Error('Storage blocked')};Storage.prototype.setItem=()=>{throw new Error('Storage blocked')};});
+ await page.emulateMedia({colorScheme:'dark'});
+ await page.reload();await page.waitForFunction(()=>document.querySelectorAll('.drive-card').length===3);
+ assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
+ await page.selectOption('#appearance','light');
+ assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
+ assert.deepEqual(errors,[]);console.log('PASS: forecast rendering, day selection, 7 responsive widths, 44px control heights, alerts, refresh, outage, recovery, system appearance, saved overrides, dark responsive layouts and blocked storage.');
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});
 

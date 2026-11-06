@@ -1,6 +1,6 @@
 # Along the way
 
-A responsive family drive forecast for Spencer, Highway 71 and Storm Lake. The site is static: serve `index.html`, `styles.css` and `roads.json` together, or use GitHub Pages. No build step is needed.
+A responsive family drive forecast for Spencer, Highway 71 and Storm Lake. The site is static: serve `index.html`, `styles.css`, `theme.js` and `roads.json` together, or use GitHub Pages. No build step is needed.
 
 ## Family schedule
 
@@ -13,3 +13,7 @@ Install development dependencies with `npm install`, then install a browser with
 The checks use a fixed date and simulated NWS responses. They cover day selection, alerts, refresh, service outages and recovery, keyboard focus, horizontal overflow at seven widths from 320 to 1440 pixels, and control heights of at least 44 pixels. Sample desktop and phone screenshots are saved to `.test-artifacts/`; their weather is test data, not a live forecast.
 
 The route illustration is schematic and is not a navigation map. Weather comes from NWS; the existing scheduled workflow refreshes Iowa 511 road reports.
+
+## Appearance
+
+Use the appearance selector next to Refresh to choose Auto theme, Light mode or Dark mode. Auto follows the device setting, including changes while the page is open. Manual choices persist on the same browser; Auto restores device-controlled appearance.
