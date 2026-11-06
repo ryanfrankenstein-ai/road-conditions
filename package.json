@@ -1,0 +1,6 @@
+{
+  "name": "family-drive-forecast",
+  "private": true,
+  "scripts": { "test": "node scripts/check-ui.cjs" },
+  "devDependencies": { "playwright": "1.62.1" }
+}
