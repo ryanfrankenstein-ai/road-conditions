@@ -11,7 +11,7 @@
   function apply() {
     const dark = preference === 'dark' || (preference === 'system' && system.matches);
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-    document.querySelector('meta[name="theme-color"]').content = dark ? '#111e19' : '#f5f4ee';
+    document.querySelector('meta[name="theme-color"]').content = dark ? '#080c0e' : '#f1f6f6';
   }
   apply();
   system.addEventListener('change', () => { if (preference === 'system') apply(); });

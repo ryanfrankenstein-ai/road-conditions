@@ -1,4 +1,4 @@
-# Along the way
+# The Family Drive Forecast
 
 A responsive family drive forecast for Spencer, Highway 71 and Storm Lake. The site is static: serve `index.html`, `styles.css`, `theme.js` and `roads.json` together, or use GitHub Pages. No build step is needed.
 
