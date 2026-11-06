@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,24 +21,24 @@
   <span class="location"><span aria-hidden="true">◎</span> Northwest Iowa</span>
 </header>
 <main class="wrap" id="main">
-  <div class="page-top"><div><p class="eyebrow">SPENCER &nbsp; / &nbsp; STORM LAKE</p><h1 class="page-title">A little clarity for the road ahead.</h1></div><div class="update-controls"><span id="updated" role="status">Getting the forecast</span><button id="refresh" type="button"><span aria-hidden="true">↻</span> Refresh</button></div></div>
+  <div class="page-top"><div><p class="eyebrow">SPENCER &nbsp; / &nbsp; STORM LAKE</p><h1 class="page-title">A little clarity for the road ahead.</h1></div><div class="update-controls"><span id="updated" role="status">Getting the forecast</span><div class="action-buttons"><select id="appearance" aria-label="Appearance"><option value="system">Auto theme</option><option value="light">Light mode</option><option value="dark">Dark mode</option></select><button id="refresh" type="button"><span aria-hidden="true">↻</span> Refresh</button></div></div></div>
   <div class="hero-band">
     <section class="hero" id="hero" aria-live="polite"><h2>Checking the roads</h2><p>Pulling the National Weather Service forecast for your drives.</p></section>
     <div class="route-scene">
       <svg viewBox="0 0 520 240" role="img" aria-labelledby="route-title route-desc">
         <title id="route-title">Your corner of Iowa</title><desc id="route-desc">A schematic of the family routes from Spencer south along Highway 71 to Storm Lake. Not a navigation map.</desc>
-        <defs><pattern id="fields" width="50" height="50" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><path d="M0 0v50" stroke="#d1dac3" stroke-width="1"/></pattern></defs>
-        <path fill="#e5e9d8" d="M0 0h520v240H0z"/><path fill="url(#fields)" d="M0 0h520v240H0z"/>
-        <path d="M0 195c70-70 85-40 140-65s80-100 170-90 130 75 210 35" stroke="#d5dec8" stroke-width="45" fill="none"/>
-        <path d="M440-20c-20 50-70 40-65 85s65 25 35 65-55 30-35 65 65 20 70 65" stroke="#b8d5ce" stroke-width="13" fill="none"/>
-        <path d="M0 64h520M0 170h520M108 0v240M310 0v240" stroke="#f7f7ef" stroke-width="5"/>
-        <path d="M147 54c30 0 45 18 45 48v53c0 26 20 32 42 32h83" stroke="#fffdf6" stroke-width="14" fill="none" stroke-linecap="round"/>
-        <path d="M147 54c30 0 45 18 45 48v53c0 26 20 32 42 32h83" stroke="#2c6552" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M147 54c30 0 45 18 45 48v53c0 26 20 32 42 32h83" stroke="#d7e4ce" stroke-width="1" stroke-dasharray="3 6" fill="none"/>
-        <circle cx="147" cy="54" r="9" fill="#2c6552" stroke="#fffdf6" stroke-width="4"/><circle cx="317" cy="187" r="9" fill="#2c6552" stroke="#fffdf6" stroke-width="4"/>
-        <g fill="#234438" font-family="Figtree,system-ui,sans-serif"><text x="166" y="48" font-size="17" font-weight="600">Spencer</text><text x="330" y="184" font-size="17" font-weight="600">Storm Lake</text><text x="217" y="225" font-size="10" letter-spacing="2">YOUR CORNER OF IOWA</text></g>
-        <rect x="174" y="109" width="36" height="30" rx="7" fill="#fffdf6" stroke="#c2ccb7"/><text x="192" y="129" text-anchor="middle" fill="#234438" font-family="system-ui" font-size="15" font-weight="700">71</text>
-        <g transform="translate(462 23)" stroke="#65806a" fill="none"><path d="M0 28V5m-5 7 5-7 5 7"/><text x="0" y="0" text-anchor="middle" fill="#65806a" stroke="none" font-family="system-ui" font-size="9">N</text></g>
+        <defs><pattern id="fields" width="50" height="50" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><path d="M0 0v50" stroke="var(--map-lines)" stroke-width="1"/></pattern></defs>
+        <path fill="var(--map-bg)" d="M0 0h520v240H0z"/><path fill="url(#fields)" d="M0 0h520v240H0z"/>
+        <path d="M0 195c70-70 85-40 140-65s80-100 170-90 130 75 210 35" stroke="var(--map-field)" stroke-width="45" fill="none"/>
+        <path d="M440-20c-20 50-70 40-65 85s65 25 35 65-55 30-35 65 65 20 70 65" stroke="var(--map-water)" stroke-width="13" fill="none"/>
+        <path d="M0 64h520M0 170h520M108 0v240M310 0v240" stroke="var(--map-streets)" stroke-width="5"/>
+        <path d="M147 54c30 0 45 18 45 48v53c0 26 20 32 42 32h83" stroke="var(--map-marker)" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M147 54c30 0 45 18 45 48v53c0 26 20 32 42 32h83" stroke="var(--map-route)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M147 54c30 0 45 18 45 48v53c0 26 20 32 42 32h83" stroke="var(--map-dashes)" stroke-width="1" stroke-dasharray="3 6" fill="none"/>
+        <circle cx="147" cy="54" r="9" fill="var(--map-route)" stroke="var(--map-marker)" stroke-width="4"/><circle cx="317" cy="187" r="9" fill="var(--map-route)" stroke="var(--map-marker)" stroke-width="4"/>
+        <g fill="var(--map-text)" font-family="Figtree,system-ui,sans-serif"><text x="166" y="48" font-size="17" font-weight="600">Spencer</text><text x="330" y="184" font-size="17" font-weight="600">Storm Lake</text><text x="217" y="225" font-size="10" letter-spacing="2">YOUR CORNER OF IOWA</text></g>
+        <rect x="174" y="109" width="36" height="30" rx="7" fill="var(--map-marker)" stroke="var(--map-border)"/><text x="192" y="129" text-anchor="middle" fill="var(--map-text)" font-family="system-ui" font-size="15" font-weight="700">71</text>
+        <g transform="translate(462 23)" stroke="var(--map-compass)" fill="none"><path d="M0 28V5m-5 7 5-7 5 7"/><text x="0" y="0" text-anchor="middle" fill="var(--map-compass)" stroke="none" font-family="system-ui" font-size="9">N</text></g>
       </svg><span class="scene-caption">Familiar routes. A more informed start.</span>
     </div>
   </div>

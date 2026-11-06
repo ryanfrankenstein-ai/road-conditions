@@ -16,7 +16,18 @@
   --b1:#faf0cd;
   --b2:#f9e3d3;
   --b3:#f6ddda;
-  --bx:#eeeee8
+  --bx:#eeeee8;
+  --map-bg:#e5e9d8;
+  --map-lines:#d1dac3;
+  --map-field:#d5dec8;
+  --map-water:#b8d5ce;
+  --map-streets:#f7f7ef;
+  --map-marker:#fffdf6;
+  --map-route:#2c6552;
+  --map-dashes:#d7e4ce;
+  --map-text:#234438;
+  --map-border:#c2ccb7;
+  --map-compass:#65806a
 }
 
 * {
@@ -286,7 +297,7 @@ h1.page-title {
 
 .route-scene {
   position:relative;
-  background:#e5e9d8;
+  background:var(--map-bg);
   display:flex;
   align-items:center;
   min-width:0
@@ -1410,4 +1421,93 @@ h1.page-title {
   *,*:before,*:after {
     transition:none!important
   }
+}
+
+/* Appearance controls stay within reach at every screen size. */
+.action-buttons {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+#appearance {
+  min-height:44px;
+  max-width:118px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px;
+  background:var(--panel);
+  color:var(--text);
+  font:inherit;
+  font-size:12px;
+  cursor:pointer;
+}
+#appearance:focus-visible {
+  outline:3px solid var(--frost);
+  outline-offset:4px;
+}
+:root[data-theme="dark"] {
+  color-scheme:dark;
+  --bg:#111e19;
+  --panel:#1a2a22;
+  --panel2:#23372c;
+  --line:#3b5043;
+  --text:#e7efe7;
+  --muted:#a7b8ae;
+  --frost:#a4d5ae;
+  --c0:#afd3a2;
+  --c1:#f4d68b;
+  --c2:#ffc199;
+  --c3:#ffb4ad;
+  --cx:#afbeb3;
+  --b0:#28432f;
+  --b1:#493e24;
+  --b2:#4e3429;
+  --b3:#4f2d2b;
+  --bx:#28372f;
+  --map-bg:#24392e;
+  --map-lines:#314c3a;
+  --map-field:#2b4333;
+  --map-water:#365d54;
+  --map-streets:#3e5545;
+  --map-marker:#1a2a22;
+  --map-route:#a6d0a0;
+  --map-dashes:#375c43;
+  --map-text:#e0eadd;
+  --map-border:#608168;
+  --map-compass:#a1b39a;
+}
+[data-theme="dark"] .dh.sel,
+[data-theme="dark"] .empty-state>span {
+  background:var(--panel2);
+  border-color:var(--line);
+}
+[data-theme="dark"] .route-number,
+[data-theme="dark"] #refresh {
+  border-color:var(--line);
+}
+[data-theme="dark"] .route-number,
+[data-theme="dark"] .section-icon,
+[data-theme="dark"] .empty-state>span {
+  color:var(--muted);
+}
+[data-theme="dark"] .scene-caption {
+  background:#1a2a22e8;
+  color:var(--text);
+  border-color:var(--line);
+}
+[data-theme="dark"] .list li:before {
+  color:var(--c1);
+}
+[data-theme="dark"] .site-header nav a:hover {
+  color:var(--c0);
+}
+[data-theme="dark"] .skip-link {
+  background:var(--frost);
+  color:var(--bg);
+}
+@media(max-width:800px) {
+  .action-buttons { flex-direction:column; align-items:stretch; }
+}
+@media(max-width:580px) {
+  #appearance { max-width:100px; font-size:11px; }
 }
