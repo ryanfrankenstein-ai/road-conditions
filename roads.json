@@ -1,13 +1,8 @@
 {
- "updatedAt": "2026-11-13T18:05:19.705Z",
+ "updatedAt": "2026-11-13T23:33:13.262Z",
  "source": "Iowa DOT 511",
  "warnings": [],
  "items": [
-  {
-   "kind": "Lane or shoulder closed",
-   "route": "Spencer area and Highway 71",
-   "text": "US 71: Both Shoulders Closed. Until Dec 31."
-  },
   {
    "kind": "Construction",
    "route": "Highway 71",
