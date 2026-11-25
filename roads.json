@@ -1,18 +1,8 @@
 {
- "updatedAt": "2026-11-25T12:09:15.083Z",
+ "updatedAt": "2026-11-25T21:40:53.943Z",
  "source": "Iowa DOT 511",
  "warnings": [],
  "items": [
-  {
-   "kind": "Winter road conditions",
-   "route": "Highway 71",
-   "text": "Partially Covered with Snow on 36, 38, 87 (11 road segments)."
-  },
-  {
-   "kind": "Winter road conditions",
-   "route": "Spencer area",
-   "text": "Partially Covered with Snow on 16 (1 road segment)."
-  },
   {
    "kind": "Construction",
    "route": "Spencer area and Highway 71",
